@@ -53,6 +53,28 @@ postRouter.get("/browseclassifieds", async (req, res) => {
   }
 });
 
+postRouter.get("/post", (req, res) => {
+  const query = {};
+  let data = PostModel.find();
+  if (req.query.category) {
+    query.category = req.query.category;
+  }
+  if (req.query.search) {
+    query.name = { $regex: req.query.search, $options: "i" };
+  }
+  data
+    .find(query, (error, ads) => {
+      if (error) {
+        res.status(500).send(error);
+      } else {
+        res.send(ads);
+      }
+    })
+    .sort({ postedAt: req.query.sort === "oldest" ? 1 : -1 })
+    .skip(parseInt(req.query.page) * 4)
+    .limit(4);
+});
+
 // Delete the Post by Buy Button
 postRouter.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
