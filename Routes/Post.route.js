@@ -30,17 +30,10 @@ postRouter.get("/browseclassifieds", async (req, res) => {
       });
       res.send(filterCategory);
     } else if (sort) {
-      if (sort === "oldest") {
-        const sortDate = data.sort(function (a, b) {
-          return new Date(a.postedAt) - new Date(b.postedAt);
-        });
-        res.send(sortDate);
-      } else if (sort === "newest") {
-        const sortDate = data.sort(function (a, b) {
-          return new Date(b.postedAt) - new Date(a.postedAt);
-        });
-        res.send(sortDate);
-      }
+      const sortDate = data.sort(function (a, b) {
+        return new Date(a.postedAt) - new Date(b.postedAt);
+      });
+      res.send(sortDate);
     } else if (name) {
       const { page = 1, limit = 4 } = req.query;
       let data = await PostModel.find({ name: { $regex: name, $options: "i" } })
